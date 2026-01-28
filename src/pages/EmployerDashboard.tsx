@@ -70,7 +70,7 @@ const EmployerDashboard = () => {
       icon: PlusCircle,
       label: "Pasang Lowongan",
       description: "Buat lowongan pekerjaan baru",
-      href: "/dashboard/lowongan/baru",
+      href: "/dashboard/employer/lowongan/baru",
       primary: true,
     },
     {
@@ -83,13 +83,13 @@ const EmployerDashboard = () => {
       icon: FileText,
       label: "Kelola Lowongan",
       description: "Lihat & edit lowongan Anda",
-      href: "/dashboard/lowongan",
+      href: "/dashboard/employer/lowongan",
     },
     {
       icon: Settings,
       label: "Pengaturan",
       description: "Atur profil perusahaan",
-      href: "/dashboard/pengaturan",
+      href: "/dashboard/employer/pengaturan",
     },
   ];
 
@@ -206,7 +206,7 @@ const EmployerDashboard = () => {
                       </p>
                     </div>
                     <Button variant="outline" size="sm" asChild>
-                      <Link to={`/dashboard/lowongan/${job.id}`}>Lihat</Link>
+                      <Link to={`/dashboard/employer/lowongan/${job.id}`}>Lihat</Link>
                     </Button>
                   </div>
                 ))}

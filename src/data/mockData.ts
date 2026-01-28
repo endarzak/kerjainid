@@ -250,6 +250,34 @@ export const mockJobs: JobPosting[] = [
   },
 ];
 
+export const skillCategories = [
+  {
+    id: "1",
+    name: "Konstruksi",
+    skills: ["Welder/Las", "Tukang Batu", "Tukang Kayu", "Tukang Cat", "Tukang Keramik", "Atap/Roofer"],
+  },
+  {
+    id: "2",
+    name: "Transportasi",
+    skills: ["Driver Mobil", "Driver Motor", "Driver Truck", "Kurir", "Operator Forklift"],
+  },
+  {
+    id: "3",
+    name: "Teknik",
+    skills: ["Listrik", "Teknisi AC", "Mekanik Motor", "Mekanik Mobil", "Plumber/Pipa"],
+  },
+  {
+    id: "4",
+    name: "Pabrik",
+    skills: ["Operator Mesin Jahit", "Operator CNC", "Operator Produksi", "Staff Gudang"],
+  },
+  {
+    id: "5",
+    name: "Jasa Rumah Tangga",
+    skills: ["Cleaning Service", "Tukang Kebun", "Handyman", "Security", "Office Boy"],
+  },
+];
+
 export const SKILL_ICONS: Record<SkillCategory, string> = {
   'welder': '🔧',
   'plumber': '🔧',

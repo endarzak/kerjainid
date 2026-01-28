@@ -62,13 +62,13 @@ const WorkerDashboard = () => {
       icon: Camera,
       label: "Update Portfolio",
       description: "Tambah foto/video hasil kerja",
-      href: "/dashboard/portfolio",
+      href: "/dashboard/worker/portfolio",
     },
     {
       icon: FileText,
       label: "Edit Profil",
       description: "Perbarui informasi diri",
-      href: "/dashboard/profil",
+      href: "/dashboard/worker/profil",
     },
     {
       icon: Briefcase,
@@ -80,7 +80,7 @@ const WorkerDashboard = () => {
       icon: Settings,
       label: "Pengaturan",
       description: "Atur notifikasi & privasi",
-      href: "/dashboard/pengaturan",
+      href: "/dashboard/worker/pengaturan",
     },
   ];
 
