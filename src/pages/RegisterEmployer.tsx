@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, Phone, User, Lock, MapPin, ArrowLeft, Briefcase, HardHat } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Phone,
+  Building2,
+  Lock,
+  MapPin,
+  Mail,
+  ArrowLeft,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,47 +22,29 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Logo } from "@/components/Logo";
-import { LOCATION_LABELS, SKILL_LABELS, SkillCategory } from "@/types";
+import { LOCATION_LABELS, INDUSTRY_LABELS, Industry } from "@/types";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
-const popularSkills: SkillCategory[] = [
-  "welder",
-  "electrician",
-  "driver-car",
-  "plumber",
-  "carpenter",
-  "ac-technician",
-];
-
-const Register = () => {
+const RegisterEmployer = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedSkills, setSelectedSkills] = useState<SkillCategory[]>([]);
   const [formData, setFormData] = useState({
-    fullName: "",
+    companyName: "",
+    email: "",
     phone: "",
+    industry: "" as Industry | "",
     location: "",
     password: "",
     agreeTerms: false,
   });
 
-  const toggleSkill = (skill: SkillCategory) => {
-    setSelectedSkills((prev) =>
-      prev.includes(skill)
-        ? prev.filter((s) => s !== skill)
-        : prev.length < 3
-        ? [...prev, skill]
-        : prev
-    );
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.agreeTerms) {
       toast({
         title: "Persetujuan Diperlukan",
@@ -63,32 +54,25 @@ const Register = () => {
       return;
     }
 
-    if (selectedSkills.length === 0) {
-      toast({
-        title: "Skill Diperlukan",
-        description: "Pilih minimal 1 skill keahlian Anda",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsLoading(true);
-    
+
     // Simulate registration
     setTimeout(() => {
       login({
-        id: "worker-" + Date.now(),
-        fullName: formData.fullName,
+        id: "emp-" + Date.now(),
+        fullName: formData.companyName,
+        companyName: formData.companyName,
         phone: formData.phone,
-        role: "worker",
+        email: formData.email,
+        role: "employer",
       });
 
       setIsLoading(false);
       toast({
         title: "Pendaftaran Berhasil! 🎉",
-        description: "Selamat datang di KERJAIN.ID. Lengkapi profil Anda untuk mulai.",
+        description: "Selamat datang di KERJAIN.ID. Mulai cari pekerja terbaik!",
       });
-      navigate("/dashboard/worker");
+      navigate("/dashboard/employer");
     }, 1500);
   };
 
@@ -107,25 +91,44 @@ const Register = () => {
             </Link>
             <Logo size="lg" />
             <h1 className="mt-6 text-2xl font-bold text-foreground">
-              Daftar Sebagai Pekerja
+              Daftar Sebagai Pemberi Kerja
             </h1>
             <p className="mt-2 text-muted-foreground">
-              Buat akun gratis dan mulai temukan pekerjaan impian Anda
+              Temukan pekerja terampil untuk bisnis Anda
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Full Name */}
+            {/* Company Name */}
             <div className="space-y-2">
-              <Label htmlFor="fullName">Nama Lengkap</Label>
+              <Label htmlFor="companyName">Nama Perusahaan / Usaha</Label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
-                  id="fullName"
-                  placeholder="Masukkan nama lengkap"
-                  value={formData.fullName}
+                  id="companyName"
+                  placeholder="PT/CV/Toko/Nama Usaha"
+                  value={formData.companyName}
                   onChange={(e) =>
-                    setFormData({ ...formData, fullName: e.target.value })
+                    setFormData({ ...formData, companyName: e.target.value })
+                  }
+                  className="pl-10"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Email */}
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="email@perusahaan.com"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
                   }
                   className="pl-10"
                   required
@@ -150,9 +153,28 @@ const Register = () => {
                   required
                 />
               </div>
-              <p className="text-xs text-muted-foreground">
-                Akan diverifikasi melalui OTP WhatsApp
-              </p>
+            </div>
+
+            {/* Industry */}
+            <div className="space-y-2">
+              <Label htmlFor="industry">Industri</Label>
+              <Select
+                value={formData.industry}
+                onValueChange={(value: Industry) =>
+                  setFormData({ ...formData, industry: value })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Pilih industri" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(INDUSTRY_LABELS).map(([key, label]) => (
+                    <SelectItem key={key} value={key}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Location */}
@@ -176,32 +198,6 @@ const Register = () => {
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-
-            {/* Skills */}
-            <div className="space-y-2">
-              <Label>Pilih Skill (max 3)</Label>
-              <div className="grid grid-cols-2 gap-2">
-                {popularSkills.map((skill) => (
-                  <button
-                    key={skill}
-                    type="button"
-                    onClick={() => toggleSkill(skill)}
-                    className={`p-3 rounded-lg border-2 text-sm font-medium text-left transition-all ${
-                      selectedSkills.includes(skill)
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border hover:border-primary/50"
-                    }`}
-                  >
-                    {SKILL_LABELS[skill]}
-                  </button>
-                ))}
-              </div>
-              {selectedSkills.length > 0 && (
-                <p className="text-xs text-muted-foreground">
-                  {selectedSkills.length}/3 skill dipilih
-                </p>
-              )}
             </div>
 
             {/* Password */}
@@ -246,11 +242,17 @@ const Register = () => {
               />
               <Label htmlFor="terms" className="text-sm font-normal leading-tight">
                 Saya menyetujui{" "}
-                <Link to="/syarat-ketentuan" className="text-primary hover:underline">
+                <Link
+                  to="/syarat-ketentuan"
+                  className="text-primary hover:underline"
+                >
                   Syarat & Ketentuan
                 </Link>{" "}
                 dan{" "}
-                <Link to="/kebijakan-privasi" className="text-primary hover:underline">
+                <Link
+                  to="/kebijakan-privasi"
+                  className="text-primary hover:underline"
+                >
                   Kebijakan Privasi
                 </Link>
               </Label>
@@ -269,11 +271,11 @@ const Register = () => {
               </Link>
             </p>
 
-            {/* Employer Registration */}
+            {/* Worker Registration */}
             <p className="text-center text-sm text-muted-foreground">
-              Ingin mendaftar sebagai pemberi kerja?{" "}
-              <Link to="/daftar-employer" className="text-primary font-medium hover:underline">
-                Daftar Employer
+              Ingin mendaftar sebagai pekerja?{" "}
+              <Link to="/daftar" className="text-primary font-medium hover:underline">
+                Daftar Pekerja
               </Link>
             </p>
           </form>
@@ -281,28 +283,28 @@ const Register = () => {
       </div>
 
       {/* Right Side - Illustration */}
-      <div className="hidden lg:flex flex-1 bg-primary items-center justify-center p-12">
-        <div className="max-w-md text-center text-primary-foreground">
-          <div className="text-8xl mb-8">👷</div>
+      <div className="hidden lg:flex flex-1 bg-secondary items-center justify-center p-12">
+        <div className="max-w-md text-center text-secondary-foreground">
+          <div className="text-8xl mb-8">🏢</div>
           <h2 className="text-3xl font-bold mb-4">
-            Bergabung dengan 50,000+ Pekerja
+            Temukan Pekerja Terbaik
           </h2>
-          <p className="text-lg text-primary-foreground/80">
-            Showcase skill Anda, bangun reputasi profesional, dan temukan 
-            kesempatan kerja yang lebih baik dengan KERJAIN.ID
+          <p className="text-lg text-secondary-foreground/80">
+            Akses ribuan pekerja terampil dan terverifikasi untuk kebutuhan
+            bisnis Anda. Proses hiring lebih cepat dan efisien.
           </p>
           <div className="mt-8 grid grid-cols-3 gap-4 text-center">
             <div>
-              <div className="text-3xl font-bold">Gratis</div>
-              <div className="text-sm text-primary-foreground/70">Pendaftaran</div>
+              <div className="text-3xl font-bold">50rb+</div>
+              <div className="text-sm text-secondary-foreground/70">Pekerja</div>
             </div>
             <div>
-              <div className="text-3xl font-bold">1000+</div>
-              <div className="text-sm text-primary-foreground/70">Lowongan</div>
+              <div className="text-3xl font-bold">27</div>
+              <div className="text-sm text-secondary-foreground/70">Kategori</div>
             </div>
             <div>
-              <div className="text-3xl font-bold">4.8★</div>
-              <div className="text-sm text-primary-foreground/70">Rating</div>
+              <div className="text-3xl font-bold">70%</div>
+              <div className="text-sm text-secondary-foreground/70">Lebih Cepat</div>
             </div>
           </div>
         </div>
@@ -311,4 +313,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default RegisterEmployer;

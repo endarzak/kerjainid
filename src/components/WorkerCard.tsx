@@ -119,8 +119,8 @@ export function WorkerCard({ worker, className }: WorkerCardProps) {
           <Button variant="outline" size="sm" asChild>
             <Link to={`/pekerja/${worker.id}`}>Lihat Profil</Link>
           </Button>
-          <Button variant="whatsapp" size="sm">
-            Hubungi
+          <Button variant="whatsapp" size="sm" asChild>
+            <Link to={`/pekerja/${worker.id}`}>Hubungi</Link>
           </Button>
         </div>
       </div>

@@ -69,7 +69,7 @@ const Index = () => {
                   <span className="text-gradient">Pekerjaan Impian</span>
                 </h1>
                 <p className="mt-6 text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">
-                  KERJA.IN menghubungkan pekerja skilled dengan pemberi kerja terpercaya. 
+                  KERJAIN.ID menghubungkan pekerja skilled dengan pemberi kerja terpercaya.
                   Verifikasi skill, rating transparan, dan proses hiring 70% lebih cepat.
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -248,7 +248,7 @@ const Index = () => {
           <div className="container">
             <div className="text-center mb-10">
               <h2 className="text-2xl md:text-3xl font-bold text-foreground">
-                Mengapa Memilih KERJA.IN?
+                Mengapa Memilih KERJAIN.ID?
               </h2>
               <p className="mt-2 text-muted-foreground max-w-2xl mx-auto">
                 Platform yang dirancang khusus untuk kebutuhan blue-collar workers dan pemberi kerja di Indonesia
