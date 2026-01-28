@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Check, Crown, Zap, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -68,14 +68,21 @@ const pricingPlans = [
     cta: "Hubungi Sales",
     ctaVariant: "outline" as const,
     popular: false,
+    isEnterprise: true,
   },
 ];
 
 const Pricing = () => {
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleSelectPlan = (planName: string) => {
+  const handleSelectPlan = (planName: string, isEnterprise?: boolean) => {
+    if (isEnterprise) {
+      navigate("/contact-sales");
+      return;
+    }
+
     if (!isAuthenticated) {
       toast({
         title: "Login Diperlukan",
@@ -171,7 +178,7 @@ const Pricing = () => {
                     variant={plan.ctaVariant}
                     size="lg"
                     className="w-full mb-6"
-                    onClick={() => handleSelectPlan(plan.name)}
+                    onClick={() => handleSelectPlan(plan.name, (plan as any).isEnterprise)}
                     disabled={plan.name === "Free"}
                   >
                     {plan.cta}

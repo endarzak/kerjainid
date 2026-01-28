@@ -15,7 +15,19 @@ import JobDetail from "./pages/JobDetail";
 import WorkerDashboard from "./pages/WorkerDashboard";
 import EmployerDashboard from "./pages/EmployerDashboard";
 import Pricing from "./pages/Pricing";
+import ContactSales from "./pages/ContactSales";
 import NotFound from "./pages/NotFound";
+
+// Employer pages
+import CreateJob from "./pages/employer/CreateJob";
+import ManageJobs from "./pages/employer/ManageJobs";
+import EmployerJobDetail from "./pages/employer/EmployerJobDetail";
+import EmployerSettings from "./pages/employer/EmployerSettings";
+
+// Worker pages
+import WorkerPortfolio from "./pages/worker/WorkerPortfolio";
+import WorkerProfile from "./pages/worker/WorkerProfile";
+import WorkerSettings from "./pages/worker/WorkerSettings";
 
 const queryClient = new QueryClient();
 
@@ -35,9 +47,22 @@ const App = () => (
             <Route path="/daftar" element={<Register />} />
             <Route path="/daftar-employer" element={<RegisterEmployer />} />
             <Route path="/masuk" element={<Login />} />
-            <Route path="/dashboard/worker" element={<WorkerDashboard />} />
-            <Route path="/dashboard/employer" element={<EmployerDashboard />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/contact-sales" element={<ContactSales />} />
+            
+            {/* Worker Dashboard Routes */}
+            <Route path="/dashboard/worker" element={<WorkerDashboard />} />
+            <Route path="/dashboard/worker/portfolio" element={<WorkerPortfolio />} />
+            <Route path="/dashboard/worker/profil" element={<WorkerProfile />} />
+            <Route path="/dashboard/worker/pengaturan" element={<WorkerSettings />} />
+            
+            {/* Employer Dashboard Routes */}
+            <Route path="/dashboard/employer" element={<EmployerDashboard />} />
+            <Route path="/dashboard/employer/lowongan/baru" element={<CreateJob />} />
+            <Route path="/dashboard/employer/lowongan" element={<ManageJobs />} />
+            <Route path="/dashboard/employer/lowongan/:id" element={<EmployerJobDetail />} />
+            <Route path="/dashboard/employer/pengaturan" element={<EmployerSettings />} />
+            
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
