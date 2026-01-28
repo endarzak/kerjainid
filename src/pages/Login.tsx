@@ -1,17 +1,20 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, Phone, Lock, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, Phone, Lock, ArrowLeft, HardHat, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/Logo";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth, UserRole } from "@/contexts/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
   const [formData, setFormData] = useState({
     phone: "",
     password: "",
@@ -19,16 +22,40 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!selectedRole) {
+      toast({
+        title: "Pilih Tipe Akun",
+        description: "Silakan pilih apakah Anda masuk sebagai pekerja atau pemberi kerja",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     // Simulate login
     setTimeout(() => {
+      login({
+        id: selectedRole + "-" + Date.now(),
+        fullName: selectedRole === "worker" ? "Budi Santoso" : "PT Maju Jaya",
+        companyName: selectedRole === "employer" ? "PT Maju Jaya" : undefined,
+        phone: formData.phone,
+        role: selectedRole,
+      });
+
       setIsLoading(false);
       toast({
         title: "Berhasil Masuk! 👋",
-        description: "Selamat datang kembali di KERJA.IN",
+        description: "Selamat datang kembali di KERJAIN.ID",
       });
-      navigate("/");
+
+      // Redirect based on role
+      if (selectedRole === "worker") {
+        navigate("/dashboard/worker");
+      } else {
+        navigate("/dashboard/employer");
+      }
     }, 1500);
   };
 
@@ -62,11 +89,42 @@ const Login = () => {
               Masuk ke Akun Anda
             </h1>
             <p className="mt-2 text-muted-foreground">
-              Masukkan nomor WhatsApp dan password Anda
+              Pilih tipe akun dan masukkan kredensial Anda
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Role Selection */}
+            <div className="space-y-2">
+              <Label>Masuk Sebagai</Label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setSelectedRole("worker")}
+                  className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${
+                    selectedRole === "worker"
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border hover:border-primary/50"
+                  }`}
+                >
+                  <HardHat className="h-8 w-8" />
+                  <span className="font-medium">Pekerja</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedRole("employer")}
+                  className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${
+                    selectedRole === "employer"
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border hover:border-primary/50"
+                  }`}
+                >
+                  <Briefcase className="h-8 w-8" />
+                  <span className="font-medium">Pemberi Kerja</span>
+                </button>
+              </div>
+            </div>
+
             {/* Phone */}
             <div className="space-y-2">
               <Label htmlFor="phone">Nomor WhatsApp</Label>
@@ -160,13 +218,26 @@ const Login = () => {
               Masuk dengan WhatsApp
             </Button>
 
-            {/* Register Link */}
-            <p className="text-center text-sm text-muted-foreground">
-              Belum punya akun?{" "}
-              <Link to="/daftar" className="text-primary font-medium hover:underline">
-                Daftar Gratis
-              </Link>
-            </p>
+            {/* Register Links */}
+            <div className="space-y-2 pt-4 border-t border-border">
+              <p className="text-center text-sm text-muted-foreground">
+                Belum punya akun?
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <Button variant="outline" asChild>
+                  <Link to="/daftar">
+                    <HardHat className="mr-2 h-4 w-4" />
+                    Daftar Pekerja
+                  </Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link to="/daftar-employer">
+                    <Briefcase className="mr-2 h-4 w-4" />
+                    Daftar Employer
+                  </Link>
+                </Button>
+              </div>
+            </div>
           </form>
         </div>
       </div>

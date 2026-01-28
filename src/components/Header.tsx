@@ -9,7 +9,7 @@ const navLinks = [
   { href: "/", label: "Beranda" },
   { href: "/cari-pekerja", label: "Cari Pekerja" },
   { href: "/lowongan", label: "Lowongan" },
-  { href: "/tentang", label: "Tentang Kami" },
+  { href: "/pricing", label: "Pricing" },
 ];
 
 export function Header() {
