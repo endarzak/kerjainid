@@ -9,6 +9,9 @@ import {
   FileText,
   Camera,
   LogOut,
+  ChevronDown,
+  ChevronUp,
+  GraduationCap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
@@ -17,11 +20,49 @@ import { BottomNav } from "@/components/BottomNav";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+
+interface Review {
+  id: string;
+  reviewerName: string;
+  reviewerCompany: string;
+  rating: number;
+  comment: string;
+  date: string;
+}
+
+const mockReviews: Review[] = [
+  {
+    id: "r1",
+    reviewerName: "Pak Darmawan",
+    reviewerCompany: "CV Maju Bersama",
+    rating: 5,
+    comment: "Pekerjaannya sangat rapih dan tepat waktu. Recommended!",
+    date: "2 minggu lalu",
+  },
+  {
+    id: "r2",
+    reviewerName: "Ibu Siti",
+    reviewerCompany: "Rumah Pribadi",
+    rating: 5,
+    comment: "Hasil las-nya kuat dan tahan lama. Harga juga sesuai.",
+    date: "1 bulan lalu",
+  },
+  {
+    id: "r3",
+    reviewerName: "Bpk. Ahmad Hidayat",
+    reviewerCompany: "PT Konstruksi Jaya",
+    rating: 4,
+    comment: "Kerja bagus, komunikatif, dan profesional.",
+    date: "2 bulan lalu",
+  },
+];
 
 const WorkerDashboard = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [showAllReviews, setShowAllReviews] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -61,7 +102,7 @@ const WorkerDashboard = () => {
     {
       icon: Camera,
       label: "Update Portfolio",
-      description: "Tambah foto/video hasil kerja",
+      description: "Tambah video hasil kerja",
       href: "/dashboard/worker/portfolio",
     },
     {
@@ -77,12 +118,20 @@ const WorkerDashboard = () => {
       href: "/lowongan",
     },
     {
+      icon: GraduationCap,
+      label: "Pelatihan",
+      description: "Tingkatkan keahlian",
+      href: "/pelatihan",
+    },
+    {
       icon: Settings,
       label: "Pengaturan",
       description: "Atur notifikasi & privasi",
       href: "/dashboard/worker/pengaturan",
     },
   ];
+
+  const displayedReviews = showAllReviews ? mockReviews : mockReviews.slice(0, 2);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -180,13 +229,74 @@ const WorkerDashboard = () => {
             </div>
           </div>
 
+          {/* Reviews Section */}
+          <div className="mt-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-foreground">
+                Ulasan dari Employer
+              </h2>
+              <div className="flex items-center gap-1">
+                <Star className="h-5 w-5 text-accent fill-accent" />
+                <span className="font-semibold">4.8</span>
+                <span className="text-sm text-muted-foreground">
+                  ({mockReviews.length} ulasan)
+                </span>
+              </div>
+            </div>
+            <div className="card-elevated divide-y divide-border">
+              {displayedReviews.map((review) => (
+                <div key={review.id} className="p-4">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="font-semibold text-primary text-sm">
+                          {review.reviewerName.charAt(0)}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground">{review.reviewerName}</p>
+                        <p className="text-xs text-muted-foreground">{review.reviewerCompany}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-0.5">
+                      {Array.from({ length: review.rating }).map((_, i) => (
+                        <Star key={i} className="h-3.5 w-3.5 text-accent fill-accent" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{review.comment}</p>
+                  <p className="text-xs text-muted-foreground mt-2">{review.date}</p>
+                </div>
+              ))}
+            </div>
+            {mockReviews.length > 2 && (
+              <Button
+                variant="ghost"
+                className="w-full mt-2"
+                onClick={() => setShowAllReviews(!showAllReviews)}
+              >
+                {showAllReviews ? (
+                  <>
+                    Tampilkan Lebih Sedikit
+                    <ChevronUp className="ml-2 h-4 w-4" />
+                  </>
+                ) : (
+                  <>
+                    Lihat Semua Ulasan ({mockReviews.length})
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  </>
+                )}
+              </Button>
+            )}
+          </div>
+
           {/* Tips Section */}
           <div className="mt-8 p-6 bg-primary/5 border border-primary/20 rounded-xl">
             <h3 className="font-semibold text-foreground mb-2">
               💡 Tips Meningkatkan Profil
             </h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>• Tambahkan foto hasil kerja terbaik Anda ke portfolio</li>
+              <li>• Tambahkan video hasil kerja terbaik Anda ke portfolio</li>
               <li>• Lengkapi deskripsi pengalaman kerja dengan detail</li>
               <li>• Minta review dari klien sebelumnya untuk meningkatkan rating</li>
               <li>• Update ketersediaan Anda secara rutin</li>

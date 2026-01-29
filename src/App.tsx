@@ -16,6 +16,9 @@ import WorkerDashboard from "./pages/WorkerDashboard";
 import EmployerDashboard from "./pages/EmployerDashboard";
 import Pricing from "./pages/Pricing";
 import ContactSales from "./pages/ContactSales";
+import MobileProfile from "./pages/MobileProfile";
+import Training from "./pages/Training";
+import TrainingDetail from "./pages/TrainingDetail";
 import NotFound from "./pages/NotFound";
 
 // Employer pages
@@ -49,6 +52,9 @@ const App = () => (
             <Route path="/masuk" element={<Login />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/contact-sales" element={<ContactSales />} />
+            <Route path="/profil" element={<MobileProfile />} />
+            <Route path="/pelatihan" element={<Training />} />
+            <Route path="/pelatihan/:id" element={<TrainingDetail />} />
             
             {/* Worker Dashboard Routes */}
             <Route path="/dashboard/worker" element={<WorkerDashboard />} />
