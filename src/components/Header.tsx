@@ -15,9 +15,9 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 const navLinks = [
-  { href: "/", label: "Beranda" },
   { href: "/cari-pekerja", label: "Cari Pekerja" },
-  { href: "/lowongan", label: "Lowongan" },
+  { href: "/lowongan", label: "Cari Lowongan" },
+  { href: "/pelatihan", label: "Pelatihan & Sertifikasi" },
 ];
 
 export function Header() {

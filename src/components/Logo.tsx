@@ -23,7 +23,7 @@ export const Logo = forwardRef<HTMLDivElement, LogoProps>(
           className
         )}
       >
-        <span className="text-primary">KERJAIN</span>
+        <span className="text-primary">QERDJAIN</span>
         <span className="text-accent">.</span>
         <span className="text-secondary">ID</span>
       </div>

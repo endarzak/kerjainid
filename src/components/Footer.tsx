@@ -103,7 +103,7 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-4 w-4 text-primary" />
-                <span>halo@kerjain.id</span>
+                <span>halo@qerdjain.id</span>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="h-4 w-4 text-primary mt-0.5" />
@@ -116,7 +116,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="mt-12 pt-8 border-t border-kerjain-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm">
-            © 2026 KERJAIN.ID. Hak cipta dilindungi undang-undang.
+            © 2026 QERDJAIN.ID. Hak cipta dilindungi undang-undang.
           </p>
           <p className="text-sm text-kerjain-gray-500">
             Dibuat dengan ❤️ untuk pekerja Indonesia
