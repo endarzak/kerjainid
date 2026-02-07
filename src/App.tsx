@@ -19,6 +19,8 @@ import ContactSales from "./pages/ContactSales";
 import MobileProfile from "./pages/MobileProfile";
 import Training from "./pages/Training";
 import TrainingDetail from "./pages/TrainingDetail";
+import Articles from "./pages/Articles";
+import ArticleDetail from "./pages/ArticleDetail";
 import NotFound from "./pages/NotFound";
 
 // Employer pages
@@ -31,6 +33,15 @@ import EmployerSettings from "./pages/employer/EmployerSettings";
 import WorkerPortfolio from "./pages/worker/WorkerPortfolio";
 import WorkerProfile from "./pages/worker/WorkerProfile";
 import WorkerSettings from "./pages/worker/WorkerSettings";
+
+// Admin CMS pages
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminWorkers from "./pages/admin/AdminWorkers";
+import AdminEmployers from "./pages/admin/AdminEmployers";
+import AdminJobs from "./pages/admin/AdminJobs";
+import AdminArticles from "./pages/admin/AdminArticles";
+import AdminTrainings from "./pages/admin/AdminTrainings";
+import AdminSettings from "./pages/admin/AdminSettings";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +66,8 @@ const App = () => (
             <Route path="/profil" element={<MobileProfile />} />
             <Route path="/pelatihan" element={<Training />} />
             <Route path="/pelatihan/:id" element={<TrainingDetail />} />
+            <Route path="/artikel" element={<Articles />} />
+            <Route path="/artikel/:slug" element={<ArticleDetail />} />
             
             {/* Worker Dashboard Routes */}
             <Route path="/dashboard/worker" element={<WorkerDashboard />} />
@@ -68,6 +81,15 @@ const App = () => (
             <Route path="/dashboard/employer/lowongan" element={<ManageJobs />} />
             <Route path="/dashboard/employer/lowongan/:id" element={<EmployerJobDetail />} />
             <Route path="/dashboard/employer/pengaturan" element={<EmployerSettings />} />
+            
+            {/* Admin CMS Routes */}
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/workers" element={<AdminWorkers />} />
+            <Route path="/admin/employers" element={<AdminEmployers />} />
+            <Route path="/admin/jobs" element={<AdminJobs />} />
+            <Route path="/admin/articles" element={<AdminArticles />} />
+            <Route path="/admin/trainings" element={<AdminTrainings />} />
+            <Route path="/admin/settings" element={<AdminSettings />} />
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

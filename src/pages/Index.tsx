@@ -104,11 +104,11 @@ const Index = () => {
 
               {/* Hero Image */}
               <div className="relative animate-slide-up hidden lg:block">
-                <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-square">
                   <img
                     src={heroImage}
                     alt="Pekerja Indonesia"
-                    className="w-full h-auto object-cover"
+                    className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                 </div>

@@ -18,6 +18,7 @@ const navLinks = [
   { href: "/cari-pekerja", label: "Cari Pekerja" },
   { href: "/lowongan", label: "Cari Lowongan" },
   { href: "/pelatihan", label: "Pelatihan & Sertifikasi" },
+  { href: "/artikel", label: "Artikel" },
 ];
 
 export function Header() {
