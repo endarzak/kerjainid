@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Search, Briefcase, User, GraduationCap } from "lucide-react";
+import { Home, Search, Briefcase, User, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -7,7 +7,7 @@ const navItems = [
   { href: "/", icon: Home, label: "Beranda" },
   { href: "/cari-pekerja", icon: Search, label: "Cari" },
   { href: "/lowongan", icon: Briefcase, label: "Lowongan" },
-  { href: "/pelatihan", icon: GraduationCap, label: "Pelatihan" },
+  { href: "/artikel", icon: FileText, label: "Artikel" },
 ];
 
 export function BottomNav() {
