@@ -104,7 +104,7 @@ const Index = () => {
 
               {/* Hero Image */}
               <div className="relative animate-slide-up hidden lg:block">
-                <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-square">
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-video">
                   <img
                     src={heroImage}
                     alt="Pekerja Indonesia"

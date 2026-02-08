@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Search, Plus, Edit, Trash2, Eye, CheckCircle, XCircle } from "lucide-react";
+import { Search, Edit, Trash2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +38,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import AdminLayout from "@/components/admin/AdminLayout";
 import { mockJobs } from "@/data/mockData";
 import { JobPosting, SKILL_LABELS } from "@/types";
 import { toast } from "sonner";
@@ -128,34 +129,19 @@ const AdminJobs = () => {
   };
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-50">
-        <div className="container py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" asChild>
-              <Link to="/admin">
-                <ArrowLeft className="h-5 w-5" />
-              </Link>
-            </Button>
-            <h1 className="font-bold text-xl">Kelola Lowongan</h1>
-          </div>
+    <AdminLayout title="Kelola Lowongan">
+      {/* Search */}
+      <div className="mb-6">
+        <div className="relative max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Cari judul, perusahaan, atau lokasi..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
         </div>
-      </header>
-
-      <main className="container py-8">
-        {/* Search */}
-        <div className="mb-6">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Cari judul, perusahaan, atau lokasi..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-        </div>
+      </div>
 
         {/* Table */}
         <div className="bg-card rounded-lg border border-border overflow-hidden">
@@ -244,10 +230,9 @@ const AdminJobs = () => {
           </Table>
         </div>
 
-        <p className="text-sm text-muted-foreground mt-4">
-          Menampilkan {filteredJobs.length} dari {jobs.length} lowongan
-        </p>
-      </main>
+      <p className="text-sm text-muted-foreground mt-4">
+        Menampilkan {filteredJobs.length} dari {jobs.length} lowongan
+      </p>
 
       {/* Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -326,7 +311,7 @@ const AdminJobs = () => {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </AdminLayout>
   );
 };
 

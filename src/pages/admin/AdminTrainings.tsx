@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Search, Plus, Edit, Trash2, Eye, GraduationCap, Users } from "lucide-react";
+import { Search, Plus, Edit, Trash2, Eye, GraduationCap, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -32,6 +32,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import AdminLayout from "@/components/admin/AdminLayout";
 import { toast } from "sonner";
 
 interface Training {
@@ -206,134 +207,117 @@ const AdminTrainings = () => {
   );
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-50">
-        <div className="container py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" asChild>
-              <Link to="/admin">
-                <ArrowLeft className="h-5 w-5" />
-              </Link>
-            </Button>
-            <h1 className="font-bold text-xl">Kelola Pelatihan</h1>
-          </div>
-          <Button onClick={handleAdd}>
-            <Plus className="h-4 w-4 mr-2" />
-            Tambah Pelatihan
-          </Button>
+    <AdminLayout title="Kelola Pelatihan">
+      <div className="flex justify-between items-center mb-6">
+        <div className="relative max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Cari judul atau kategori..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
         </div>
-      </header>
+        <Button onClick={handleAdd}>
+          <Plus className="h-4 w-4 mr-2" />
+          Tambah Pelatihan
+        </Button>
+      </div>
 
-      <main className="container py-8">
-        {/* Search */}
-        <div className="mb-6">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Cari judul atau kategori..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-        </div>
-
-        {/* Table */}
-        <div className="bg-card rounded-lg border border-border overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Pelatihan</TableHead>
-                <TableHead>Kategori</TableHead>
-                <TableHead>Durasi</TableHead>
-                <TableHead>Harga</TableHead>
-                <TableHead>Peserta</TableHead>
-                <TableHead>Sertifikat</TableHead>
-                <TableHead className="text-right">Aksi</TableHead>
+      {/* Table */}
+      <div className="bg-card rounded-lg border border-border overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Pelatihan</TableHead>
+              <TableHead>Kategori</TableHead>
+              <TableHead>Durasi</TableHead>
+              <TableHead>Harga</TableHead>
+              <TableHead>Peserta</TableHead>
+              <TableHead>Sertifikat</TableHead>
+              <TableHead className="text-right">Aksi</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredTrainings.map((training) => (
+              <TableRow key={training.id}>
+                <TableCell>
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={training.image}
+                      alt={training.title}
+                      className="w-16 h-12 rounded object-cover"
+                    />
+                    <div>
+                      <p className="font-medium line-clamp-1">{training.title}</p>
+                      <p className="text-xs text-muted-foreground">{training.instructor}</p>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge variant="secondary">{training.category}</Badge>
+                </TableCell>
+                <TableCell>{training.duration}</TableCell>
+                <TableCell>Rp {training.price.toLocaleString("id-ID")}</TableCell>
+                <TableCell>
+                  <span className="flex items-center gap-1">
+                    <Users className="h-4 w-4" />
+                    {training.enrolledCount}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  {training.isCertified ? (
+                    <Badge className="bg-primary/10 text-primary border-primary/20">
+                      <GraduationCap className="h-3 w-3 mr-1" />
+                      Bersertifikat
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline">Non-sertifikat</Badge>
+                  )}
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-2">
+                    <Button variant="ghost" size="icon" asChild>
+                      <Link to={`/pelatihan/${training.slug}`}>
+                        <Eye className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleEdit(training)}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Hapus Pelatihan?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Apakah Anda yakin ingin menghapus pelatihan "{training.title}"? Tindakan
+                            ini tidak dapat dibatalkan.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Batal</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete(training.id)}>
+                            Hapus
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredTrainings.map((training) => (
-                <TableRow key={training.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={training.image}
-                        alt={training.title}
-                        className="w-16 h-12 rounded object-cover"
-                      />
-                      <div>
-                        <p className="font-medium line-clamp-1">{training.title}</p>
-                        <p className="text-xs text-muted-foreground">{training.instructor}</p>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">{training.category}</Badge>
-                  </TableCell>
-                  <TableCell>{training.duration}</TableCell>
-                  <TableCell>Rp {training.price.toLocaleString("id-ID")}</TableCell>
-                  <TableCell>
-                    <span className="flex items-center gap-1">
-                      <Users className="h-4 w-4" />
-                      {training.enrolledCount}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    {training.isCertified ? (
-                      <Badge className="bg-green-100 text-green-700">
-                        <GraduationCap className="h-3 w-3 mr-1" />
-                        Bersertifikat
-                      </Badge>
-                    ) : (
-                      <Badge variant="outline">Non-sertifikat</Badge>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button variant="ghost" size="icon" asChild>
-                        <Link to={`/pelatihan/${training.slug}`}>
-                          <Eye className="h-4 w-4" />
-                        </Link>
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleEdit(training)}>
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <Trash2 className="h-4 w-4 text-red-500" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Hapus Pelatihan?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Apakah Anda yakin ingin menghapus pelatihan "{training.title}"? Tindakan
-                              ini tidak dapat dibatalkan.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Batal</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDelete(training.id)}>
-                              Hapus
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
-        <p className="text-sm text-muted-foreground mt-4">
-          Menampilkan {filteredTrainings.length} dari {trainings.length} pelatihan
-        </p>
-      </main>
+      <p className="text-sm text-muted-foreground mt-4">
+        Menampilkan {filteredTrainings.length} dari {trainings.length} pelatihan
+      </p>
 
       {/* Edit/Add Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -422,7 +406,7 @@ const AdminTrainings = () => {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </AdminLayout>
   );
 };
 
