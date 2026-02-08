@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Search, Plus, Edit, Trash2, Star, Crown, Eye } from "lucide-react";
+import { Search, Plus, Edit, Trash2, Star, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +38,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import AdminLayout from "@/components/admin/AdminLayout";
 import { Employer, Industry, INDUSTRY_LABELS } from "@/types";
 import { toast } from "sonner";
 
@@ -183,136 +184,119 @@ const AdminEmployers = () => {
   );
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-50">
-        <div className="container py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" asChild>
-              <Link to="/admin">
-                <ArrowLeft className="h-5 w-5" />
-              </Link>
-            </Button>
-            <h1 className="font-bold text-xl">Kelola Employer</h1>
-          </div>
-          <Button onClick={handleAdd}>
-            <Plus className="h-4 w-4 mr-2" />
-            Tambah Employer
-          </Button>
+    <AdminLayout title="Kelola Employer">
+      <div className="flex justify-between items-center mb-6">
+        <div className="relative max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Cari nama perusahaan atau lokasi..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
         </div>
-      </header>
+        <Button onClick={handleAdd}>
+          <Plus className="h-4 w-4 mr-2" />
+          Tambah Employer
+        </Button>
+      </div>
 
-      <main className="container py-8">
-        {/* Search */}
-        <div className="mb-6">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Cari nama perusahaan atau lokasi..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-        </div>
-
-        {/* Table */}
-        <div className="bg-card rounded-lg border border-border overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Perusahaan</TableHead>
-                <TableHead>Industri</TableHead>
-                <TableHead>Lokasi</TableHead>
-                <TableHead>Rating</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Aksi</TableHead>
+      {/* Table */}
+      <div className="bg-card rounded-lg border border-border overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Perusahaan</TableHead>
+              <TableHead>Industri</TableHead>
+              <TableHead>Lokasi</TableHead>
+              <TableHead>Rating</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Aksi</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredEmployers.map((employer) => (
+              <TableRow key={employer.id}>
+                <TableCell>
+                  <div>
+                    <p className="font-medium flex items-center gap-2">
+                      {employer.companyName}
+                      {employer.isPremium && (
+                        <Crown className="h-4 w-4 text-primary" />
+                      )}
+                    </p>
+                    <p className="text-xs text-muted-foreground">{employer.email}</p>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge variant="secondary">{INDUSTRY_LABELS[employer.industry]}</Badge>
+                </TableCell>
+                <TableCell>{employer.location}</TableCell>
+                <TableCell>
+                  <span className="flex items-center gap-1">
+                    <Star className="h-4 w-4 text-primary fill-primary" />
+                    {employer.averageRating}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  {employer.isPremium ? (
+                    <Badge className="bg-primary/10 text-primary border-primary/20">
+                      Premium s/d {employer.premiumUntil}
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline">Free</Badge>
+                  )}
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleTogglePremium(employer.id, !employer.isPremium)}
+                      title={employer.isPremium ? "Remove Premium" : "Make Premium"}
+                    >
+                      <Crown
+                        className={`h-4 w-4 ${
+                          employer.isPremium ? "text-primary" : "text-muted-foreground"
+                        }`}
+                      />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleEdit(employer)}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Hapus Employer?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Apakah Anda yakin ingin menghapus {employer.companyName}? Tindakan ini
+                            tidak dapat dibatalkan.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Batal</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete(employer.id)}>
+                            Hapus
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredEmployers.map((employer) => (
-                <TableRow key={employer.id}>
-                  <TableCell>
-                    <div>
-                      <p className="font-medium flex items-center gap-2">
-                        {employer.companyName}
-                        {employer.isPremium && (
-                          <Crown className="h-4 w-4 text-yellow-500" />
-                        )}
-                      </p>
-                      <p className="text-xs text-muted-foreground">{employer.email}</p>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">{INDUSTRY_LABELS[employer.industry]}</Badge>
-                  </TableCell>
-                  <TableCell>{employer.location}</TableCell>
-                  <TableCell>
-                    <span className="flex items-center gap-1">
-                      <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-                      {employer.averageRating}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    {employer.isPremium ? (
-                      <Badge className="bg-yellow-100 text-yellow-700">
-                        Premium s/d {employer.premiumUntil}
-                      </Badge>
-                    ) : (
-                      <Badge variant="outline">Free</Badge>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleTogglePremium(employer.id, !employer.isPremium)}
-                        title={employer.isPremium ? "Remove Premium" : "Make Premium"}
-                      >
-                        <Crown
-                          className={`h-4 w-4 ${
-                            employer.isPremium ? "text-yellow-500" : "text-muted-foreground"
-                          }`}
-                        />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleEdit(employer)}>
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <Trash2 className="h-4 w-4 text-red-500" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Hapus Employer?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Apakah Anda yakin ingin menghapus {employer.companyName}? Tindakan ini
-                              tidak dapat dibatalkan.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Batal</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDelete(employer.id)}>
-                              Hapus
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
-        <p className="text-sm text-muted-foreground mt-4">
-          Menampilkan {filteredEmployers.length} dari {employers.length} employer
-        </p>
-      </main>
+      <p className="text-sm text-muted-foreground mt-4">
+        Menampilkan {filteredEmployers.length} dari {employers.length} employer
+      </p>
 
       {/* Edit/Add Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -385,7 +369,7 @@ const AdminEmployers = () => {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </AdminLayout>
   );
 };
 
