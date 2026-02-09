@@ -21,6 +21,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { HiringProgress } from "@/components/HiringProgress";
 
 interface Review {
   id: string;
@@ -176,6 +177,9 @@ const WorkerDashboard = () => {
               </div>
             ))}
           </div>
+
+          {/* Hiring Progress */}
+          <HiringProgress />
 
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Quick Actions */}
