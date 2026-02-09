@@ -47,6 +47,17 @@ const benefits = [
 ];
 
 const Index = () => {
+  const cmsHeroImage = (() => {
+    try {
+      const stored = localStorage.getItem("cms_pages");
+      if (stored) {
+        const data = JSON.parse(stored);
+        if (data.homepage?.heroImage) return data.homepage.heroImage;
+      }
+    } catch {}
+    return null;
+  })();
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
@@ -106,7 +117,7 @@ const Index = () => {
               <div className="relative animate-slide-up hidden lg:block">
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-video">
                   <img
-                    src={heroImage}
+                    src={cmsHeroImage || heroImage}
                     alt="Pekerja Indonesia"
                     className="w-full h-full object-cover"
                   />

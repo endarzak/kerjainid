@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Save, Eye, Edit2 } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Save, Eye, Edit2, Upload, X, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,6 +13,7 @@ interface PageContent {
   homepage: {
     heroTitle: string;
     heroSubtitle: string;
+    heroImage: string;
     ctaText: string;
     statsWorkers: string;
     statsEmployers: string;
@@ -36,6 +37,7 @@ const defaultContent: PageContent = {
   homepage: {
     heroTitle: "Cari Pekerja Terampil untuk Proyek Anda",
     heroSubtitle: "Platform penghubung antara penyedia jasa dan pencari tenaga kerja terampil di Indonesia",
+    heroImage: "",
     ctaText: "Cari Pekerja Sekarang",
     statsWorkers: "50,000+",
     statsEmployers: "2,000+",
@@ -58,6 +60,7 @@ const defaultContent: PageContent = {
 const AdminPages = () => {
   const [content, setContent] = useState<PageContent>(defaultContent);
   const [activeTab, setActiveTab] = useState("homepage");
+  const heroFileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("cms_pages");
@@ -69,6 +72,27 @@ const AdminPages = () => {
   const handleSave = () => {
     localStorage.setItem("cms_pages", JSON.stringify(content));
     toast.success("Konten halaman berhasil disimpan!");
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Ukuran file maksimal 5MB");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const base64 = ev.target?.result as string;
+      if (field === "heroImage") {
+        setContent({
+          ...content,
+          homepage: { ...content.homepage, heroImage: base64 },
+        });
+      }
+      toast.success("Gambar berhasil diupload!");
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -125,6 +149,55 @@ const AdminPages = () => {
                       })
                     }
                   />
+                </div>
+                <div>
+                  <Label>Hero Image (16:9, maks 5MB)</Label>
+                  <input
+                    ref={heroFileRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => handleImageUpload(e, "heroImage")}
+                  />
+                  {content.homepage.heroImage ? (
+                    <div className="mt-2 relative rounded-lg overflow-hidden border border-border">
+                      <img
+                        src={content.homepage.heroImage}
+                        alt="Hero preview"
+                        className="w-full aspect-video object-cover"
+                      />
+                      <div className="absolute top-2 right-2 flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => heroFileRef.current?.click()}
+                        >
+                          <Upload className="h-3 w-3 mr-1" /> Ganti
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() =>
+                            setContent({
+                              ...content,
+                              homepage: { ...content.homepage, heroImage: "" },
+                            })
+                          }
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      onClick={() => heroFileRef.current?.click()}
+                      className="mt-2 border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary/50 transition-colors"
+                    >
+                      <ImageIcon className="h-10 w-10 mx-auto text-muted-foreground mb-2" />
+                      <p className="text-sm text-muted-foreground">Klik untuk upload gambar hero</p>
+                      <p className="text-xs text-muted-foreground mt-1">JPG, PNG, WebP • Maks 5MB</p>
+                    </div>
+                  )}
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
